@@ -7,6 +7,8 @@ package tabelaxlsx;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,6 +67,7 @@ public class Principal extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jButtonGerar = new javax.swing.JButton();
         jTextFieldEmpresa = new javax.swing.JFormattedTextField();
+        Status = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Importação de Arquivos Excel");
@@ -105,6 +108,11 @@ public class Principal extends javax.swing.JFrame {
                 jButtonProcurarActionPerformed(evt);
             }
         });
+        jButtonProcurar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButtonProcurarKeyPressed(evt);
+            }
+        });
 
         jTextFieldCaminho.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jTextFieldCaminho.setDisabledTextColor(new java.awt.Color(0, 0, 0));
@@ -127,6 +135,14 @@ public class Principal extends javax.swing.JFrame {
         } catch (java.text.ParseException ex) {
             ex.printStackTrace();
         }
+        jTextFieldEmpresa.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldEmpresaKeyPressed(evt);
+            }
+        });
+
+        Status.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        Status.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -136,19 +152,20 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 107, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonGerar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jTextFieldCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButtonProcurar))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextFieldEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jTextFieldCaminho, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonProcurar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Status, javax.swing.GroupLayout.PREFERRED_SIZE, 583, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                        .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(312, 312, 312)
@@ -171,7 +188,9 @@ public class Principal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Status, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -213,53 +232,18 @@ public class Principal extends javax.swing.JFrame {
                 DefaultTableModel modelo = (DefaultTableModel) jTableDados.getModel();
                 if (!row.equals("")) {
                     try {
-                        if (row.getCell(3).getNumericCellValue() > 0.0) {
-                            try {
-                                modelo.addRow(new Object[]{
-                                    MetodoUtil.dateToString(row.getCell(0).getDateCellValue()),
-                                    row.getCell(1),
-                                    row.getCell(2),
-                                    MetodoUtil.bigDecimalToString(new BigDecimal(row.getCell(3).getNumericCellValue())),
-                                    row.getCell(4),
-                                    decimalFormat.format(new BigDecimal(row.getCell(5).getNumericCellValue()).toBigInteger()),
-                                    row.getCell(6),
-                                    decimalFormat.format(new BigDecimal(row.getCell(7).getNumericCellValue()).toBigInteger()),});
-                            } catch (ParseException ex) {
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                                ex.printStackTrace();
-                            } catch (IllegalStateException e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                            }
-                        } else {
-                            try {
-                                modelo.addRow(new Object[]{
-                                    MetodoUtil.dateToString(row.getCell(0).getDateCellValue()),
-                                    row.getCell(1),
-                                    row.getCell(2),
-                                    MetodoUtil.bigDecimalToString(new BigDecimal(row.getCell(3).getNumericCellValue()).multiply(new BigDecimal(-1))),
-                                    row.getCell(4),
-                                    decimalFormat.format(new BigDecimal(row.getCell(5).getNumericCellValue()).toBigInteger()),
-                                    row.getCell(6),
-                                    decimalFormat.format(new BigDecimal(row.getCell(7).getNumericCellValue()).toBigInteger()),});
-                            } catch (ParseException ex) {
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                            } catch (IllegalStateException e) {
-                                e.printStackTrace();
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                            } catch (Exception e) {
-                                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.ERROR);
-                            }
-
-                        }
-                    } catch (IllegalStateException e) {
-                        e.printStackTrace();
-                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.WARNING_MESSAGE);
+                        modelo.addRow(new Object[]{
+                            CelulaData(row.getCell(0)),
+                            CelulaValorInteiroDocumento(row.getCell(1)),
+                            CelulaValorInteiroDocumento(row.getCell(2)),
+                            CelulaValor(row.getCell(3)),
+                            CelulaValorInteiroDocumento(row.getCell(4)),
+                            decimalFormat.format(new BigDecimal(row.getCell(5).getNumericCellValue()).toBigInteger()),
+                            row.getCell(6),
+                            decimalFormat.format(new BigDecimal(row.getCell(7).getNumericCellValue()).toBigInteger()),});
                     } catch (Exception e) {
-                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo", "Atenção", JOptionPane.WARNING_MESSAGE);
+                        e.printStackTrace();
+                        Status.setText("Ocorreu um erro ao gerar o arquivo");
                     }
 
                 }
@@ -297,6 +281,7 @@ public class Principal extends javax.swing.JFrame {
             try {
                 fisPlanilha.close();
             } catch (IOException ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
             }
         }
@@ -307,70 +292,152 @@ public class Principal extends javax.swing.JFrame {
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
         // TODO add your handling code here:
         BufferedWriter buffWrite = null;
-        String path = ("P:/ProEmp00/CTB/CTBLCTOS" + jTextFieldEmpresa.getText() + ".txt");
 
-        try {
+        //String path = ("P:/ProEmp00/CTB/CTBLCTOS" + jTextFieldEmpresa.getText() + ".txt");
+        String path = ("C:/ArquivosTXT/CTBLCTOS" + jTextFieldEmpresa.getText() + ".txt");
+        File file = new File(path);
+        if (file.exists()) {
+            if (JOptionPane.showConfirmDialog(this, "O arquivo já existe, deseja excluí-lo", "Atenção", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                file.delete();
 
-            buffWrite = new BufferedWriter(new FileWriter(path));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
-        }
-        for (int i = 0; i < jTableDados.getRowCount(); i++) {
+                try {
 
-            try {
-                DecimalFormat formatoCodigo = new DecimalFormat("00000");
-                DecimalFormat formatoValor = new DecimalFormat("0000000000000.00");
-                SimpleDateFormat formatoData = new SimpleDateFormat("ddMMyyyy");
-                StringBuilder string = new StringBuilder();
-
-                //String linha = "";
-                //Scanner in = new Scanner(System.in);
-                //System.out.println("Escreva algo: ");
-                //linha = in.nextLine();
-                string.append("LC1");
-                string.append(formatoCodigo.format(i + 1));
-                string.append("   ");
-                string.append(1);
-                string.append(formatoData.format(MetodoUtil.stringToDate(jTableDados.getValueAt(i, 0).toString())));
-                if (jTableDados.getValueAt(i, 1) != null) {
-                    String numeroDocumento = String.format("%-10.10s", jTableDados.getValueAt(i, 1).toString());
-                    string.append(numeroDocumento);
-                } else {
-                    string.append("          ");
+                    buffWrite = new BufferedWriter(new FileWriter(path));
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
                 }
-                string.append("     ");
-                string.append("                              ");
-                string.append("   ");
-                string.append(jTableDados.getValueAt(i, 5).toString());
-                if (jTableDados.getValueAt(i, 6) != null) {
-                    String terceiroDebito = String.format("%-14.14s", jTableDados.getValueAt(i, 6).toString());
-                    string.append(terceiroDebito);
-                } else {
-                    string.append("              ");
-                }
-                string.append("     ");
-                string.append(jTableDados.getValueAt(i, 7).toString());
-                string.append("              ");
-                System.out.println(MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString()));
-                string.append("     ");
-                string.append(String.format("%016.2f", MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString())).replace(",", "."));
-                string.append(jTableDados.getValueAt(i, 2));
-                buffWrite.append(string);
-                buffWrite.newLine();
+                for (int i = 0; i < jTableDados.getRowCount(); i++) {
 
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
-            } catch (ParseException ex) {
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+                    try {
+                        DecimalFormat formatoCodigo = new DecimalFormat("00000");
+                        DecimalFormat formatoValor = new DecimalFormat("0000000000000.00");
+                        SimpleDateFormat formatoData = new SimpleDateFormat("ddMMyyyy");
+                        StringBuilder string = new StringBuilder();
+
+                        //String linha = "";
+                        //Scanner in = new Scanner(System.in);
+                        //System.out.println("Escreva algo: ");
+                        //linha = in.nextLine();
+                        string.append("LC1");
+                        string.append(formatoCodigo.format(i + 1));
+                        string.append("   ");
+                        string.append(1);
+                        string.append(formatoData.format(MetodoUtil.stringToDate(jTableDados.getValueAt(i, 0).toString())));
+                        if (jTableDados.getValueAt(i, 1) != null) {
+                            String numeroDocumento = String.format("%-10.10s", jTableDados.getValueAt(i, 1).toString());
+                            string.append(numeroDocumento);
+                        } else {
+                            string.append("          ");
+                        }
+                        string.append("     ");
+                        string.append("                              ");
+                        string.append("   ");
+                        string.append(jTableDados.getValueAt(i, 5).toString());
+                        if (jTableDados.getValueAt(i, 6) != null) {
+                            String terceiroDebito = String.format("%-14.14s", jTableDados.getValueAt(i, 6).toString());
+                            string.append(terceiroDebito);
+                        } else {
+                            string.append("              ");
+                        }
+                        string.append("     ");
+                        string.append(jTableDados.getValueAt(i, 7).toString());
+                        string.append("              ");
+                        System.out.println(MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString()));
+                        string.append("     ");
+                        string.append(String.format("%016.2f", MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString())).replace(",", "."));
+                        string.append(jTableDados.getValueAt(i, 2));
+                        buffWrite.append(string);
+                        buffWrite.newLine();
+
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+                    } catch (ParseException ex) {
+                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+                    }
+                }
+                try {
+                    JOptionPane.showMessageDialog(this, "Arquivo construido com sucesso" + path);
+                    buffWrite.close();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo");
+                }
             }
         }
-        try {
-            JOptionPane.showMessageDialog(this, "Arquivo construido com sucesso" + path);
-            buffWrite.close();
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo");
-        }
     }//GEN-LAST:event_jButtonGerarActionPerformed
+
+    private void jTextFieldEmpresaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldEmpresaKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            jButtonProcurar.requestFocus();
+        }
+    }//GEN-LAST:event_jTextFieldEmpresaKeyPressed
+
+    private void jButtonProcurarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButtonProcurarKeyPressed
+        // TODO add your handling code here:
+        ActionEvent evento = null;
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            jButtonProcurarActionPerformed(evento);
+        }
+    }//GEN-LAST:event_jButtonProcurarKeyPressed
+
+    public String CelulaData(Cell cell) {
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_STRING: {
+                try {
+                    return MetodoUtil.dateToString(MetodoUtil.stringToDate(cell.getStringCellValue()));
+                } catch (ParseException ex) {
+                    ex.printStackTrace();
+                    Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
+                }
+            }
+            default:
+                try {
+                    return MetodoUtil.dateToString(cell.getDateCellValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
+                }
+        }
+        return null;
+    }
+
+    public Object CelulaValor(Cell cell) {
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_NUMERIC:
+                try {
+                    if (cell.getNumericCellValue() > 0.0) {
+                        return MetodoUtil.bigDecimalToString(new BigDecimal(cell.getNumericCellValue()));
+                    } else {
+                        return MetodoUtil.bigDecimalToString(new BigDecimal(cell.getNumericCellValue()).multiply(new BigDecimal(-1)));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
+                }
+        }
+        return null;
+    }
+
+    public Object CelulaValorInteiroDocumento(Cell cell) {
+        switch (cell.getCellType()) {
+            case Cell.CELL_TYPE_NUMERIC: {
+                try {
+                    return new BigDecimal(cell.getNumericCellValue()).toBigInteger();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
+                }
+            }
+            default:
+                try {
+                    return cell.getStringCellValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
+                }
+        }
+        return null;
+    }
 
     public static void limparTabela(JTable tabela) {
 
@@ -429,6 +496,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Status;
     private javax.swing.JButton jButtonGerar;
     private javax.swing.JButton jButtonProcurar;
     private javax.swing.JLabel jLabel1;
