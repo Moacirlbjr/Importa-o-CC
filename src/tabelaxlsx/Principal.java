@@ -299,75 +299,76 @@ public class Principal extends javax.swing.JFrame {
         if (file.exists()) {
             if (JOptionPane.showConfirmDialog(this, "O arquivo já existe, deseja excluí-lo", "Atenção", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                 file.delete();
-
-                try {
-
-                    buffWrite = new BufferedWriter(new FileWriter(path));
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
-                }
-                for (int i = 0; i < jTableDados.getRowCount(); i++) {
-
-                    try {
-                        DecimalFormat formatoCodigo = new DecimalFormat("00000");
-                        DecimalFormat formatoValor = new DecimalFormat("0000000000000.00");
-                        SimpleDateFormat formatoData = new SimpleDateFormat("ddMMyyyy");
-                        StringBuilder string = new StringBuilder();
-
-                        //String linha = "";
-                        //Scanner in = new Scanner(System.in);
-                        //System.out.println("Escreva algo: ");
-                        //linha = in.nextLine();
-                        string.append("LC1");
-                        string.append(formatoCodigo.format(i + 1));
-                        string.append("   ");
-                        string.append(1);
-                        string.append(formatoData.format(MetodoUtil.stringToDate(jTableDados.getValueAt(i, 0).toString())));
-                        if (jTableDados.getValueAt(i, 1) != null) {
-                            String numeroDocumento = String.format("%-10.10s", jTableDados.getValueAt(i, 1).toString());
-                            string.append(numeroDocumento);
-                        } else {
-                            string.append("          ");
-                        }
-                        string.append("     ");
-                        string.append("                              ");
-                        string.append("   ");
-                        string.append(jTableDados.getValueAt(i, 5).toString());
-                        if (jTableDados.getValueAt(i, 6) != null) {
-                            String terceiroDebito = String.format("%-14.14s", jTableDados.getValueAt(i, 6).toString());
-                            string.append(terceiroDebito);
-                        } else {
-                            string.append("              ");
-                        }
-                        string.append("     ");
-                        string.append(jTableDados.getValueAt(i, 7).toString());
-                        string.append("              ");
-                        System.out.println(MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString()));
-                        string.append("     ");
-                        string.append(String.format("%016.2f", MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString())).replace(",", "."));
-                        string.append(jTableDados.getValueAt(i, 2));
-                        buffWrite.append(string);
-                        buffWrite.newLine();
-
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
-                    } catch (ParseException ex) {
-                        JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
-                    }
-                }
-                try {
-                    JOptionPane.showMessageDialog(this, "Arquivo construido com sucesso" + path);
-                    buffWrite.close();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo");
-                }
             }
         }
+        try {
+
+            buffWrite = new BufferedWriter(new FileWriter(path));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+        }
+        for (int i = 0; i < jTableDados.getRowCount(); i++) {
+
+            try {
+                DecimalFormat formatoCodigo = new DecimalFormat("00000");
+                DecimalFormat formatoValor = new DecimalFormat("0000000000000.00");
+                SimpleDateFormat formatoData = new SimpleDateFormat("ddMMyyyy");
+                StringBuilder string = new StringBuilder();
+
+                //String linha = "";
+                //Scanner in = new Scanner(System.in);
+                //System.out.println("Escreva algo: ");
+                //linha = in.nextLine();
+                string.append("LC1");
+                string.append(formatoCodigo.format(i + 1));
+                string.append("   ");
+                string.append(1);
+                string.append(formatoData.format(MetodoUtil.stringToDate(jTableDados.getValueAt(i, 0).toString())));
+                if (jTableDados.getValueAt(i, 1) != null) {
+                    String numeroDocumento = String.format("%-10.10s", jTableDados.getValueAt(i, 1).toString());
+                    string.append(numeroDocumento);
+                } else {
+                    string.append("          ");
+                }
+                string.append("     ");
+                string.append("                              ");
+                string.append("   ");
+                string.append(jTableDados.getValueAt(i, 5).toString());
+                if (jTableDados.getValueAt(i, 6) != null) {
+                    String terceiroDebito = String.format("%-14.14s", jTableDados.getValueAt(i, 6).toString());
+                    string.append(terceiroDebito);
+                } else {
+                    string.append("              ");
+                }
+                string.append("     ");
+                string.append(jTableDados.getValueAt(i, 7).toString());
+                string.append("              ");
+                System.out.println(MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString()));
+                string.append("     ");
+                string.append(String.format("%016.2f", MetodoUtil.stringToBigDecimal(jTableDados.getValueAt(i, 3).toString())).replace(",", "."));
+                string.append(jTableDados.getValueAt(i, 2));
+                buffWrite.append(string);
+                buffWrite.newLine();
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+            } catch (ParseException ex) {
+                JOptionPane.showMessageDialog(this, "Ocorreu um erro ao gerar o arquivo");
+            }
+        }
+        try {
+            JOptionPane.showMessageDialog(this, "Arquivo construido com sucesso" + path);
+            buffWrite.close();
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Ocorreu um erro ao carregar o arquivo");
+        }
+
+
     }//GEN-LAST:event_jButtonGerarActionPerformed
 
     private void jTextFieldEmpresaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldEmpresaKeyPressed
         // TODO add your handling code here:
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             jButtonProcurar.requestFocus();
         }
     }//GEN-LAST:event_jTextFieldEmpresaKeyPressed
@@ -375,7 +376,7 @@ public class Principal extends javax.swing.JFrame {
     private void jButtonProcurarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButtonProcurarKeyPressed
         // TODO add your handling code here:
         ActionEvent evento = null;
-        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             jButtonProcurarActionPerformed(evento);
         }
     }//GEN-LAST:event_jButtonProcurarKeyPressed
@@ -419,6 +420,9 @@ public class Principal extends javax.swing.JFrame {
     }
 
     public Object CelulaValorInteiroDocumento(Cell cell) {
+        if (cell == null) {
+            return "";
+        }
         switch (cell.getCellType()) {
             case Cell.CELL_TYPE_NUMERIC: {
                 try {
@@ -428,6 +432,9 @@ public class Principal extends javax.swing.JFrame {
                     Status.setText("Ocorreu um erro na linha " + cell.getRowIndex() + 1);
                 }
             }
+            case Cell.CELL_TYPE_BLANK:
+                return "";
+
             default:
                 try {
                     return cell.getStringCellValue();
